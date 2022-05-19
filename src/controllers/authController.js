@@ -1,23 +1,43 @@
 /* eslint-disable no-unused-expressions */
-const { successResponse, failResponse } = require('../helpers');
-const { registerUserToDb, loginUserToDb } = require('../models/authModel');
+const {
+  successResponse,
+  failResponse,
+  hashPassword,
+  verifyPassword,
+  createJWToken,
+} = require('../helpers');
+const {
+  registerUserToDb,
+  loginUserToDb,
+  checkForUser,
+} = require('../models/authModel');
 
 async function registerUser(req, res) {
-  const regRes = await registerUserToDb(req.body);
+  const hashedPassword = hashPassword(req.body.password);
+  const { email, username } = req.body;
+  const userExists = await checkForUser(email, username);
+  if (userExists) {
+    failResponse(res, userExists);
+    return;
+  }
+  const regRes = await registerUserToDb(email, username, hashedPassword);
   regRes
-    ? successResponse(res, 'user registered successful')
+    ? successResponse(res, 'user registered successfuly')
     : failResponse(res);
 }
 
 async function loginUser(req, res) {
   const user = await loginUserToDb(req.body);
   if (!user) {
-    failResponse(res);
+    failResponse(res, "user doesn't exist");
     return;
   }
-  user.password === req.body.password
-    ? successResponse(res, 'login successful')
-    : failResponse(res);
+  if (verifyPassword(req.body.password, user.password)) {
+    const token = createJWToken(user.id);
+    successResponse(res, token);
+    return;
+  }
+  failResponse(res, 'email or password is not correct');
 }
 
 module.exports = { registerUser, loginUser };
