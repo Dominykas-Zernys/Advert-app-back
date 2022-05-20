@@ -6,6 +6,7 @@ const morgan = require('morgan');
 const cors = require('cors');
 const authRouter = require('./routes/authRoutes');
 const adRouter = require('./routes/adRoutes');
+const catRouter = require('./routes/catRoutes');
 
 const { PORT } = process.env;
 const app = express();
@@ -20,6 +21,7 @@ app.use(express.json());
 
 app.use('/auth', authRouter);
 app.use('/adverts', adRouter);
+app.use('/categories', catRouter);
 
 // Server launch
 

@@ -106,6 +106,19 @@ async function validateAdvert(req, res, next) {
   }
 }
 
+async function validateCategory(req, res, next) {
+  try {
+    const schema = Joi.object({
+      name: Joi.string().required(),
+      description: Joi.string().required(),
+    });
+    await schema.validateAsync(req.body);
+    next();
+  } catch (error) {
+    failResponse(res, error.details[0].message);
+  }
+}
+
 module.exports = {
   dbConnect,
   successResponse,
@@ -117,4 +130,5 @@ module.exports = {
   validateLogin,
   validateRegister,
   validateAdvert,
+  validateCategory,
 };
