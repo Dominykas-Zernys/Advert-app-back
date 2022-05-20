@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-expressions */
 const {
   successResponse,
   failResponse,
@@ -34,7 +33,11 @@ async function loginUser(req, res) {
   }
   if (verifyPassword(req.body.password, user.password)) {
     const token = createJWToken(user.id);
-    successResponse(res, token);
+    successResponse(res, {
+      token,
+      username: user.username,
+      email: user.email,
+    });
     return;
   }
   failResponse(res, 'email or password is not correct');

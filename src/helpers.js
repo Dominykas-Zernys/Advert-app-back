@@ -1,3 +1,4 @@
+/* eslint-disable comma-dangle */
 /* eslint-disable newline-per-chained-call */
 /* eslint-disable consistent-return */
 require('dotenv').config();
@@ -45,7 +46,7 @@ function createJWToken(userId) {
 }
 
 function verifyJWToken(req, res, next) {
-  if (req.headers.authorization) {
+  if (!req.headers.authorization) {
     return failResponse(res, 'no token');
   }
   const token = req.headers.authorization.split(' ')[1];
@@ -53,7 +54,6 @@ function verifyJWToken(req, res, next) {
     if (err) {
       return failResponse(res, 'token not valid');
     }
-    console.log(user);
     req.userId = user.id;
     next();
   });
@@ -90,6 +90,22 @@ async function validateLogin(req, res, next) {
   }
 }
 
+async function validateAdvert(req, res, next) {
+  try {
+    const schema = Joi.object({
+      categoryId: Joi.number().required(),
+      imageSrc: Joi.string().required(),
+      description: Joi.string().min(10).max(400).required(),
+      email: Joi.string().email().max(40).required(),
+      phone: Joi.string().required(),
+    });
+    await schema.validateAsync(req.body);
+    next();
+  } catch (error) {
+    failResponse(res, error.details[0].message);
+  }
+}
+
 module.exports = {
   dbConnect,
   successResponse,
@@ -100,4 +116,5 @@ module.exports = {
   verifyJWToken,
   validateLogin,
   validateRegister,
+  validateAdvert,
 };
