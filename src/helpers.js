@@ -93,11 +93,14 @@ async function validateLogin(req, res, next) {
 async function validateAdvert(req, res, next) {
   try {
     const schema = Joi.object({
-      categoryId: Joi.number().required(),
-      imageSrc: Joi.string().required(),
+      category: Joi.number().required(),
+      image: Joi.string().required(),
+      shortDescription: Joi.string().min(10).required(),
       description: Joi.string().min(10).max(400).required(),
       email: Joi.string().email().max(40).required(),
       phone: Joi.string().required(),
+      style: Joi.number().required(),
+      title: Joi.string().required(),
     });
     await schema.validateAsync(req.body);
     next();

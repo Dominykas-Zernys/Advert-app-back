@@ -45,14 +45,17 @@ async function addNewAdToDb(userId, adData) {
   try {
     const dataToPost = [
       userId,
-      adData.categoryId,
-      adData.imageSrc,
+      adData.category,
+      adData.image,
       adData.description,
       adData.email,
       adData.phone,
+      adData.shortDescription,
+      adData.style,
+      adData.title,
     ];
     const sql =
-      'INSERT INTO adverts (user_id, category_id, image_src, description, email, phone) VALUES(?,?,?,?,?,?)';
+      'INSERT INTO adverts (user_id, category_id, image_src, description, email, phone, short_description, style_id, title) VALUES(?,?,?,?,?,?,?,?,?)';
     const con = await mysql.createConnection(dbConnect);
     const [adverts] = await con.execute(sql, dataToPost);
     await con.close();
