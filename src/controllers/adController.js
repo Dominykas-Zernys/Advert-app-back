@@ -1,11 +1,6 @@
-const { successResponse, failResponse } = require('../helpers');
-const {
-  getAdsFromDb,
-  getOwnerAdsFromDb,
-  getOneAdFromDb,
-  addNewAdToDb,
-  removeAddFromDb,
-} = require('../models/adModel');
+/* eslint-disable object-curly-newline */
+const { successResponse, failResponse, bufferToBase64 } = require('../helpers');
+const { getAdsFromDb, getOwnerAdsFromDb, getOneAdFromDb, addNewAdToDb, removeAddFromDb } = require('../models/adModel');
 
 async function getAds(req, res) {
   const ads = await getAdsFromDb();
@@ -23,17 +18,14 @@ async function getOwnerAds(req, res) {
 }
 
 async function postAd(req, res) {
-  const newAddPosted = await addNewAdToDb(req.userId, req.body);
-  newAddPosted
-    ? successResponse(res, 'new advert added')
-    : failResponse(res, "couldn't add new advert");
+  const imgFullString = bufferToBase64(req.file.buffer, req.file.mimetype);
+  const newAddPosted = await addNewAdToDb(req.userId, req.body, imgFullString);
+  newAddPosted ? successResponse(res, 'new advert added successfully') : failResponse(res, "couldn't add new advert");
 }
 
 async function deleteAd(req, res) {
   const deleteResult = await removeAddFromDb(req.userId, req.params.id);
-  deleteResult.affectedRows
-    ? successResponse(res, 'advert deleted successfully')
-    : failResponse(res, "couldn't delete advert");
+  deleteResult.affectedRows ? successResponse(res, 'advert deleted successfully') : failResponse(res, "couldn't delete advert");
 }
 
 module.exports = {

@@ -16,7 +16,7 @@ const dbConnect = {
 // Response functions
 
 function successResponse(res, msg) {
-  res.json({ success: true, msg });
+  res.send({ success: true, msg });
 }
 
 function failResponse(res, err = 'something went wrong') {
@@ -94,7 +94,7 @@ async function validateAdvert(req, res, next) {
   try {
     const schema = Joi.object({
       category: Joi.number().required(),
-      image: Joi.string().required(),
+      image: Joi.any(),
       shortDescription: Joi.string().min(10).required(),
       description: Joi.string().min(10).max(400).required(),
       email: Joi.string().email().max(40).required(),
@@ -103,6 +103,7 @@ async function validateAdvert(req, res, next) {
       title: Joi.string().required(),
     });
     await schema.validateAsync(req.body);
+    console.log(req.body);
     next();
   } catch (error) {
     failResponse(res, error.details[0].message);
@@ -122,6 +123,59 @@ async function validateCategory(req, res, next) {
   }
 }
 
+// Multer for image upload
+
+const multer = require('multer');
+const path = require('path');
+const _ = require('lodash');
+
+const storage = multer.memoryStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'images');
+  },
+
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname));
+  },
+});
+
+const fileFilter = (req, file, cb) => {
+  // supported image file mimetypes
+  const allowedMimes = ['image/jpeg', 'image/pjpeg', 'image/png'];
+
+  if (_.includes(allowedMimes, file.mimetype)) {
+    // allow supported image files
+    cb(null, true);
+  } else {
+    req.error = 'Invalid file type';
+    // throw error for invalid files
+    cb(null, true);
+  }
+};
+
+const upload = multer({ storage, limits: { fileSize: 1024 * 1024 }, fileFilter });
+
+const uploadSingleImage = upload.single('image');
+
+function checkFileSize(req, res, next) {
+  uploadSingleImage(req, res, (err) => {
+    if (err) {
+      return failResponse(res, 'File is too large');
+    }
+    next();
+  });
+}
+
+function checkFileType(req, res, next) {
+  req.error ? failResponse(res, req.error) : next();
+}
+
+// Function to convert image buffer to base64 string
+function bufferToBase64(buffer, fileType) {
+  const imgInBase64 = Buffer.from(buffer).toString('base64');
+  return `data:${fileType};base64, ${imgInBase64}`;
+}
+
 module.exports = {
   dbConnect,
   successResponse,
@@ -134,4 +188,8 @@ module.exports = {
   validateRegister,
   validateAdvert,
   validateCategory,
+  upload,
+  checkFileSize,
+  checkFileType,
+  bufferToBase64,
 };

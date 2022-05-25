@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable operator-linebreak */
 const mysql = require('mysql2/promise');
 const { dbConnect } = require('../helpers');
@@ -41,19 +42,9 @@ async function getOwnerAdsFromDb(userId) {
   }
 }
 
-async function addNewAdToDb(userId, adData) {
+async function addNewAdToDb(userId, adData, img) {
   try {
-    const dataToPost = [
-      userId,
-      adData.category,
-      adData.image,
-      adData.description,
-      adData.email,
-      adData.phone,
-      adData.shortDescription,
-      adData.style,
-      adData.title,
-    ];
+    const dataToPost = [userId, adData.category, img, adData.description, adData.email, adData.phone, adData.shortDescription, adData.style, adData.title];
     const sql =
       'INSERT INTO adverts (user_id, category_id, image_src, description, email, phone, short_description, style_id, title) VALUES(?,?,?,?,?,?,?,?,?)';
     const con = await mysql.createConnection(dbConnect);
