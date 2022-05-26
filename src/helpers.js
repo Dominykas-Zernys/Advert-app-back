@@ -171,6 +171,7 @@ function checkFileType(req, res, next) {
 }
 
 // Function to convert image buffer to base64 string
+
 function bufferToBase64(buffer, fileType) {
   const imgInBase64 = Buffer.from(buffer).toString('base64');
   return `data:${fileType};base64, ${imgInBase64}`;
