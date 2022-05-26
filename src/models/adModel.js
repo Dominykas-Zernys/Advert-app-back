@@ -6,7 +6,7 @@ const { dbConnect } = require('../helpers');
 async function getAdsFromDb() {
   try {
     const sql =
-      'SELECT id, phone, email, category_id AS categoryId, short_description AS shortDescription, created_at AS createdAt, title, style_id AS styleId FROM adverts ORDER BY created_at DESC';
+      'SELECT id, phone, email, image_src AS imageSrc, category_id AS categoryId, short_description AS shortDescription, created_at AS createdAt, title, style_id AS styleId FROM adverts ORDER BY created_at DESC';
     const con = await mysql.createConnection(dbConnect);
     const [adverts] = await con.query(sql);
     await con.close();
@@ -33,7 +33,7 @@ async function getOneAdFromDb(id) {
 async function getOwnerAdsFromDb(userId) {
   try {
     const sql =
-      'SELECT id, phone, email, category_id AS categoryId, short_description AS shortDescription, created_at AS createdAt, title, style_id AS styleId FROM adverts WHERE user_id=? ORDER BY created_at DESC ';
+      'SELECT id, phone, email, image_src AS imageSrc, category_id AS categoryId, short_description AS shortDescription, created_at AS createdAt, title, style_id AS styleId FROM adverts WHERE user_id=? ORDER BY created_at DESC ';
     const con = await mysql.createConnection(dbConnect);
     const [adverts] = await con.execute(sql, [userId]);
     await con.close();
