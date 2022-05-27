@@ -6,7 +6,7 @@ const { dbConnect } = require('../helpers');
 async function getAdsFromDb() {
   try {
     const sql =
-      'SELECT id, phone, email, image_src AS imageSrc, category_id AS categoryId, short_description AS shortDescription, created_at AS createdAt, title, style_id AS styleId FROM adverts ORDER BY created_at DESC';
+      'SELECT id, phone, email, banner_img AS imageSrc, category_id AS categoryId, short_description AS shortDescription, created_at AS createdAt, title, style_id AS styleId FROM adverts ORDER BY created_at DESC';
     const con = await mysql.createConnection(dbConnect);
     const [adverts] = await con.query(sql);
     await con.close();
@@ -19,7 +19,7 @@ async function getAdsFromDb() {
 
 async function getOneAdFromDb(id) {
   try {
-    const sql = 'SELECT * FROM adverts WHERE id=?';
+    const sql = 'SELECT id, phone, email, image_src AS imageSrc, description, title, style_id AS styleId FROM adverts WHERE id=?';
     const con = await mysql.createConnection(dbConnect);
     const [[advert]] = await con.execute(sql, [id]);
     await con.close();
@@ -33,7 +33,7 @@ async function getOneAdFromDb(id) {
 async function getOwnerAdsFromDb(userId) {
   try {
     const sql =
-      'SELECT id, phone, email, image_src AS imageSrc, category_id AS categoryId, short_description AS shortDescription, created_at AS createdAt, title, style_id AS styleId FROM adverts WHERE user_id=? ORDER BY created_at DESC ';
+      'SELECT id, phone, email, banner_img AS imageSrc, category_id AS categoryId, short_description AS shortDescription, created_at AS createdAt, title, style_id AS styleId FROM adverts WHERE user_id=? ORDER BY created_at DESC ';
     const con = await mysql.createConnection(dbConnect);
     const [adverts] = await con.execute(sql, [userId]);
     await con.close();
@@ -46,9 +46,20 @@ async function getOwnerAdsFromDb(userId) {
 
 async function addNewAdToDb(userId, adData, img) {
   try {
-    const dataToPost = [userId, adData.category, img, adData.description, adData.email, adData.phone, adData.shortDescription, adData.style, adData.title];
+    const dataToPost = [
+      userId,
+      adData.category,
+      img,
+      adData.description,
+      adData.email,
+      adData.phone,
+      adData.shortDescription,
+      adData.style,
+      adData.title,
+      adData.bannerImg,
+    ];
     const sql =
-      'INSERT INTO adverts (user_id, category_id, image_src, description, email, phone, short_description, style_id, title) VALUES(?,?,?,?,?,?,?,?,?)';
+      'INSERT INTO adverts (user_id, category_id, image_src, description, email, phone, short_description, style_id, title, banner_img) VALUES(?,?,?,?,?,?,?,?,?,?)';
     const con = await mysql.createConnection(dbConnect);
     const [adverts] = await con.execute(sql, dataToPost);
     await con.close();

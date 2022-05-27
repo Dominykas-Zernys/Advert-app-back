@@ -98,9 +98,14 @@ async function validateAdvert(req, res, next) {
       shortDescription: Joi.string().min(10).required(),
       description: Joi.string().min(10).max(400).required(),
       email: Joi.string().email().max(40).required(),
-      phone: Joi.string().required(),
+      phone: Joi.string()
+        .min(8)
+        .max(15)
+        .pattern(/^[0-9]+$/)
+        .required(),
       style: Joi.number().required(),
       title: Joi.string().required(),
+      bannerImg: Joi.string().required(),
     });
     await schema.validateAsync(req.body);
     console.log(req.body);
