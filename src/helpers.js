@@ -95,7 +95,7 @@ async function validateAdvert(req, res, next) {
     const schema = Joi.object({
       category: Joi.number().required(),
       image: Joi.any(),
-      shortDescription: Joi.string().min(10).required(),
+      shortDescription: Joi.string().min(10).max(100).required(),
       description: Joi.string().min(10).max(400).required(),
       email: Joi.string().email().max(40).required(),
       phone: Joi.string()
@@ -104,7 +104,7 @@ async function validateAdvert(req, res, next) {
         .pattern(/^[0-9]+$/)
         .required(),
       style: Joi.number().required(),
-      title: Joi.string().required(),
+      title: Joi.string().max(25).required(),
       bannerImg: Joi.string().required(),
     });
     await schema.validateAsync(req.body);
