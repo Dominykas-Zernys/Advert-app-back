@@ -12,7 +12,6 @@ async function getAdsFromDb() {
     await con.close();
     return adverts;
   } catch (error) {
-    console.log(error);
     return false;
   }
 }
@@ -25,7 +24,6 @@ async function getOneAdFromDb(id) {
     await con.close();
     return advert;
   } catch (error) {
-    console.log(error);
     return false;
   }
 }
@@ -39,7 +37,6 @@ async function getOwnerAdsFromDb(userId) {
     await con.close();
     return adverts;
   } catch (error) {
-    console.log(error);
     return false;
   }
 }
@@ -65,7 +62,6 @@ async function addNewAdToDb(userId, adData, img) {
     await con.close();
     return adverts;
   } catch (error) {
-    console.log(error);
     return false;
   }
 }
@@ -78,7 +74,6 @@ async function removeAddFromDb(userId, adId) {
     await con.close();
     return deleteResult;
   } catch (error) {
-    console.log(error);
     return false;
   }
 }

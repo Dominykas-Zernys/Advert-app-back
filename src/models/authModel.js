@@ -21,7 +21,6 @@ async function checkForUser(email, username) {
     }
     return false;
   } catch (error) {
-    console.log(error);
     return 'something went wrong';
   }
 }
@@ -30,14 +29,12 @@ async function checkForUser(email, username) {
 
 async function registerUserToDb(email, username, password) {
   try {
-    const sql =
-      'INSERT INTO users (email, username, password) VALUES (?, ?, ?)';
+    const sql = 'INSERT INTO users (email, username, password) VALUES (?, ?, ?)';
     const con = await mysql.createConnection(dbConnect);
     const [regUser] = await con.execute(sql, [email, username, password]);
     await con.close();
     return regUser;
   } catch (error) {
-    console.log(error);
     return false;
   }
 }
@@ -50,7 +47,6 @@ async function loginUserToDb({ email }) {
     await con.close();
     return user;
   } catch (error) {
-    console.log(error);
     return false;
   }
 }

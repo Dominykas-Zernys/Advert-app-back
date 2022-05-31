@@ -108,7 +108,6 @@ async function validateAdvert(req, res, next) {
       bannerImg: Joi.string().required(),
     });
     await schema.validateAsync(req.body);
-    console.log(req.body);
     next();
   } catch (error) {
     failResponse(res, error.details[0].message);

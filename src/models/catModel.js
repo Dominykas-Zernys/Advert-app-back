@@ -9,7 +9,6 @@ async function getCategoriesFromDb() {
     await con.close();
     return categories;
   } catch (error) {
-    console.log(error);
     return false;
   }
 }
@@ -22,7 +21,6 @@ async function postNewCatToDb(categoryData) {
     await con.close();
     return postResult;
   } catch (error) {
-    console.log(error);
     return false;
   }
 }
