@@ -9,6 +9,11 @@ async function getAds(req, res) {
 
 async function getAd(req, res) {
   const ad = await getOneAdFromDb(req.params.id);
+  if (req.userId === ad.userId) {
+    ad.belongsToUser = true;
+  } else {
+    ad.belongsToUser = false;
+  }
   ad ? successResponse(res, ad) : failResponse(res);
 }
 

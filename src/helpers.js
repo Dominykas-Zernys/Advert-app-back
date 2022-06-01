@@ -59,6 +59,20 @@ function verifyJWToken(req, res, next) {
   });
 }
 
+function verifyJWTokenOptional(req, res, next) {
+  if (!req.headers.authorization) {
+    return next();
+  }
+  const token = req.headers.authorization.split(' ')[1];
+  jwt.verify(token, jwtSecret, (err, user) => {
+    if (err) {
+      return next();
+    }
+    req.userId = user.id;
+    next();
+  });
+}
+
 // Joi validation
 
 const Joi = require('joi');
@@ -193,6 +207,7 @@ module.exports = {
   verifyPassword,
   createJWToken,
   verifyJWToken,
+  verifyJWTokenOptional,
   validateLogin,
   validateRegister,
   validateAdvert,
