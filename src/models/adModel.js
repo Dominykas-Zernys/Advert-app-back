@@ -18,7 +18,7 @@ async function getAdsFromDb() {
 
 async function getOneAdFromDb(id) {
   try {
-    const sql = 'SELECT id, phone, email, image_src AS imageSrc, description, title, style_id AS styleId FROM adverts WHERE id=?';
+    const sql = 'SELECT id, user_id AS userId, phone, email, image_src AS imageSrc, description, title, style_id AS styleId FROM adverts WHERE id=?';
     const con = await mysql.createConnection(dbConnect);
     const [[advert]] = await con.execute(sql, [id]);
     await con.close();
@@ -31,7 +31,7 @@ async function getOneAdFromDb(id) {
 async function getOwnerAdsFromDb(userId) {
   try {
     const sql =
-      'SELECT id, phone, email, banner_img AS imageSrc, category_id AS categoryId, short_description AS shortDescription, created_at AS createdAt, title, style_id AS styleId FROM adverts WHERE user_id=? ORDER BY created_at DESC LIMIT 200';
+      'SELECT id, user_id AS userId, phone, email, banner_img AS imageSrc, category_id AS categoryId, short_description AS shortDescription, created_at AS createdAt, title, style_id AS styleId FROM adverts WHERE user_id=? ORDER BY created_at DESC LIMIT 200';
     const con = await mysql.createConnection(dbConnect);
     const [adverts] = await con.execute(sql, [userId]);
     await con.close();
